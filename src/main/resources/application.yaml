@@ -1,3 +1,60 @@
+server:
+  port: 30000
+
 spring:
   application:
     name: memento
+
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
+  config:
+    import: optional:file:.env
+
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3307/memento?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=utf8&serverTimezone=Asia/Seoul}
+    username: ${MYSQL_USER:memento}
+    password: ${MYSQL_PASSWORD:memento}
+    hikari:
+      pool-name: memento-pool
+      maximum-pool-size: 12
+      minimum-idle: 12
+      connection-timeout: 5000
+      max-lifetime: 1800000
+      idle-timeout: 600000
+      validation-timeout: 1000
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        highlight_sql: true
+        jdbc.time_zone: Asia/Seoul
+        generate_statistics: false
+        session.events.log.LOG_QUERIES_SLOWER_THAN_MS: 300
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      connect-timeout: 2s
+      timeout: 2s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
