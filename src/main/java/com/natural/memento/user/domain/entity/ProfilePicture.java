@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "v1_profile_pictures")
+@Table(name = "v1_user_profile_pictures")
 @Entity
 public class ProfilePicture {
 

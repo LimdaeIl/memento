@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "v1_addresses")
+@Table(name = "v1_user_addresses")
 @Entity
 public class Address {
 
