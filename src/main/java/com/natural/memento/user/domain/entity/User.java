@@ -40,6 +40,9 @@ public class User extends BaseEntity {
     @Embedded
     private UserAddress address;
 
+    @Column(name = "profile_image", length = 300)
+    private String profileImage;
+
     private User(String email, String password, String nickname) {
         this.email = email;
         this.password = password;
@@ -49,6 +52,22 @@ public class User extends BaseEntity {
 
     public static User create(String email, String password, String nickname) {
         return new User(email, password, nickname);
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void updateAddress(UserAddress address) {
+        this.address = address;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
 

@@ -1,7 +1,7 @@
 package com.natural.memento.user.application.service;
 
-import com.natural.memento.user.application.dto.request.SendEmailCodeRequest;
-import com.natural.memento.user.application.dto.request.VerifyEmailCodeRequest;
+import com.natural.memento.user.application.dto.request.auth.SendEmailCodeRequest;
+import com.natural.memento.user.application.dto.request.auth.VerifyEmailCodeRequest;
 import com.natural.memento.user.application.dto.response.auth.SendEmailCodeResponse;
 import com.natural.memento.user.application.dto.response.auth.VerifyEmailCodeResponse;
 import com.natural.memento.user.domain.exception.AuthErrorCode;
@@ -33,7 +33,7 @@ public class EmailService {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     @Transactional
-    public SendEmailCodeResponse sendEmailCode(SendEmailCodeRequest request) {
+    public SendEmailCodeResponse sendEmailCodeBySignup(SendEmailCodeRequest request) {
         if (userJpaRepository.existsByEmailAndDeletedAtIsNull(request.email())) {
             throw new AuthException(AuthErrorCode.EMAIL_EXISTS);
         }
@@ -108,5 +108,48 @@ public class EmailService {
     private static String toMinuteText(Duration duration) {
         long minutes = Math.max(1, duration.toMinutes());
         return minutes + "분";
+    }
+
+    public SendEmailCodeResponse sendEmailCodeByUpdate(String beforeEmail, SendEmailCodeRequest request) {
+
+        if (beforeEmail.equals(request.email())) {
+            throw new AuthException(AuthErrorCode.EMAIL_DUPLICATE);
+        }
+
+        if (userJpaRepository.existsByEmailAndDeletedAtIsNull(request.email())) {
+            throw new AuthException(AuthErrorCode.EMAIL_EXISTS);
+        }
+
+        if (userEmailAuthRepository.isLocked(request.email())) {
+            throw new AuthException(AuthErrorCode.EMAIL_AUTH_LOCKED);
+        }
+
+        if (userEmailAuthRepository.hasCooldown(request.email())) {
+            throw new AuthException(AuthErrorCode.EMAIL_AUTH_COOLDOWN);
+        }
+
+        String code = generate6DigitCode();
+
+        userEmailAuthRepository.saveCode(request.email(), code, props.codeValidityDuration());
+        userEmailAuthRepository.setCooldown(request.email(), props.resendCooldownDuration());
+
+        String subject = props.template() != null
+                && props.template().subject() != null
+                ? props.template().subject()
+                : "[memento] 이메일 인증 코드";
+
+        long minutes = Math.max(1, props.codeValidityDuration().toMinutes());
+        String html = templateRenderer.render(
+                "beforeEmail/beforeEmail-auth",
+                Map.of(
+                        "brand", "memento",
+                        "purpose", "update",
+                        "code", code,
+                        "minutes", minutes
+                )
+        );
+        emailSender.sendCode(request.email(), subject, html);
+
+        return SendEmailCodeResponse.of(request.email());
     }
 }

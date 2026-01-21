@@ -1,7 +1,7 @@
 package com.natural.memento.user.infrastructure.redis;
 
 
-import com.natural.memento.user.domain.repository.TokenRepository;
+import com.natural.memento.user.domain.repository.UserTokenRepository;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class TokenRedisRepository implements TokenRepository {
+public class UserTokenRedisRepository implements UserTokenRepository {
 
     private final StringRedisTemplate template;
 

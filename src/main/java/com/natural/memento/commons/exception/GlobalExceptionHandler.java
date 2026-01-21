@@ -1,7 +1,6 @@
 package com.natural.memento.commons.exception;
 
 import com.natural.memento.commons.response.ErrorResponse;
-import com.natural.memento.commons.response.ErrorResponse.FieldError;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -10,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.mail.MailException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -184,6 +185,46 @@ public class GlobalExceptionHandler {
                         title,
                         HttpStatus.INTERNAL_SERVER_ERROR,
                         code.message(),
+                        request.getRequestURI(),
+                        title,
+                        null
+                ));
+    }
+
+    @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
+    public ResponseEntity<ErrorResponse> handleAccessDenied(
+            Exception ex,
+            HttpServletRequest request
+    ) {
+        AppErrorCode code = AppErrorCode.ACCESS_DENIED;
+        String title = code.name();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ErrorResponse.problem(
+                        problemType(title),
+                        title,
+                        HttpStatus.FORBIDDEN,
+                        "권한이 없습니다.",
+                        request.getRequestURI(),
+                        title,
+                        null
+                ));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthentication(
+            AuthenticationException ex,
+            HttpServletRequest request
+    ) {
+        AppErrorCode code = AppErrorCode.UNAUTHORIZED;
+        String title = code.name();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.problem(
+                        problemType(title),
+                        title,
+                        HttpStatus.UNAUTHORIZED,
+                        "인증이 필요합니다.",
                         request.getRequestURI(),
                         title,
                         null

@@ -1,12 +1,13 @@
 package com.natural.memento.user.presentation;
 
 import com.natural.memento.commons.response.ApiResponse;
-import com.natural.memento.user.application.dto.request.LogoutRequest;
-import com.natural.memento.user.application.dto.request.SendEmailCodeRequest;
-import com.natural.memento.user.application.dto.request.SignInRequest;
-import com.natural.memento.user.application.dto.request.SignupRequest;
-import com.natural.memento.user.application.dto.request.TokenReissueRequest;
-import com.natural.memento.user.application.dto.request.VerifyEmailCodeRequest;
+import com.natural.memento.commons.security.CustomUserDetails;
+import com.natural.memento.user.application.dto.request.auth.LogoutRequest;
+import com.natural.memento.user.application.dto.request.auth.SendEmailCodeRequest;
+import com.natural.memento.user.application.dto.request.auth.SignInRequest;
+import com.natural.memento.user.application.dto.request.auth.SignupRequest;
+import com.natural.memento.user.application.dto.request.auth.TokenReissueRequest;
+import com.natural.memento.user.application.dto.request.auth.VerifyEmailCodeRequest;
 import com.natural.memento.user.application.dto.response.auth.SendEmailCodeResponse;
 import com.natural.memento.user.application.dto.response.auth.SignInResponse;
 import com.natural.memento.user.application.dto.response.auth.SignupResponse;
@@ -17,6 +18,8 @@ import com.natural.memento.user.application.service.EmailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -31,14 +34,27 @@ public class AuthController {
     private final AuthService authService;
     private final EmailService emailService;
 
-    @PostMapping("/email/send-code")
-    public ResponseEntity<ApiResponse<SendEmailCodeResponse>> sendEmailCode(
+    @PostMapping("/signup/email/send-code")
+    public ResponseEntity<ApiResponse<SendEmailCodeResponse>> sendEmailCodeBySignup(
             @RequestBody @Valid SendEmailCodeRequest request
     ) {
-        SendEmailCodeResponse response = emailService.sendEmailCode(request);
+        SendEmailCodeResponse response = emailService.sendEmailCodeBySignup(request);
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PostMapping("/update/email/send-code")
+    public ResponseEntity<ApiResponse<SendEmailCodeResponse>> sendEmailCodeByUpdate(
+            @RequestBody @Valid SendEmailCodeRequest request,
+            @AuthenticationPrincipal CustomUserDetails details
+    ) {
+        SendEmailCodeResponse response = emailService.sendEmailCodeByUpdate(details.getEmail(),
+                request);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
 
     @PostMapping("/email/verify-code")
     public ResponseEntity<ApiResponse<VerifyEmailCodeResponse>> verifyEmailCode(

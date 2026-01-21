@@ -1,0 +1,46 @@
+### 1. 회원가입
+POST http://localhost:30000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "optional94@naver.com",
+  "password": "test1234!",
+  "nickname": "test"
+}
+
+### 2. 로그인
+POST http://localhost:30000/api/v1/auth/sign-in
+Content-Type: application/json
+
+{
+  "email": "optional94@naver.com",
+  "password": "test1234!"
+}
+
+> {%
+  client.global.set("userId", response.body.data.userId);
+  client.global.set("accessToken", response.body.data.accessToken);
+  client.global.set("refreshToken", response.body.data.refreshToken);
+%}
+
+### 3. 나의 정보 조회
+GET http://localhost:30000/api/v1/users/me
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+### 4. 정보 수정(닉네임, 주소(city, street, zipcode), 프로필 사진)
+PATCH http://localhost:30000/api/v1/users/profile
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "nickname": "닉네임수정1",
+  "city": "도시1",
+  "street": "도로122",
+  "zipcode": "우편번호1",
+  "profileImage": "이미지추가1"
+}
+
+
+###
+

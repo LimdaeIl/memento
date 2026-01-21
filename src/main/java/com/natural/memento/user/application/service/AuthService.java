@@ -3,8 +3,8 @@ package com.natural.memento.user.application.service;
 import com.natural.memento.commons.jwt.JwtErrorCode;
 import com.natural.memento.commons.jwt.JwtTokenProvider;
 import com.natural.memento.commons.jwt.TokenException;
-import com.natural.memento.user.application.dto.request.SignInRequest;
-import com.natural.memento.user.application.dto.request.SignupRequest;
+import com.natural.memento.user.application.dto.request.auth.SignInRequest;
+import com.natural.memento.user.application.dto.request.auth.SignupRequest;
 import com.natural.memento.user.application.dto.response.auth.SignInResponse;
 import com.natural.memento.user.application.dto.response.auth.SignupResponse;
 import com.natural.memento.user.application.dto.response.auth.TokenReissueResponse;
@@ -13,7 +13,7 @@ import com.natural.memento.user.domain.exception.AuthErrorCode;
 import com.natural.memento.user.domain.exception.AuthException;
 import com.natural.memento.user.domain.exception.UserErrorCode;
 import com.natural.memento.user.domain.exception.UserException;
-import com.natural.memento.user.domain.repository.TokenRepository;
+import com.natural.memento.user.domain.repository.UserTokenRepository;
 import com.natural.memento.user.domain.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserJpaRepository userJpaRepository;
-    private final TokenRepository tokenRepository;
+    private final UserTokenRepository userTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
@@ -54,7 +54,7 @@ public class AuthService {
 
     @Transactional
     public SignInResponse signIn(SignInRequest request) {
-        User user = userJpaRepository.findByEmail(request.email())
+        User user = userJpaRepository.findByEmailAndDeletedAtIsNull(request.email())
                 .orElseThrow(() -> new AuthException(AuthErrorCode.USER_NOT_FOUND_BY_EMAIL,
                         request.email()));
 
@@ -67,7 +67,7 @@ public class AuthService {
 
         long refreshTtlMs = jwtTokenProvider.getRtTtlSeconds(rt);
 
-        tokenRepository.saveRefreshToken(user.getId(), rt, refreshTtlMs);
+        userTokenRepository.saveRefreshToken(user.getId(), rt, refreshTtlMs);
 
         return SignInResponse.of(user, at, rt);
     }
@@ -77,11 +77,11 @@ public class AuthService {
 
         Long userId = jwtTokenProvider.getUserId(rt);
 
-        if (tokenRepository.isRtBlacklisted(rt)) {
+        if (userTokenRepository.isRtBlacklisted(rt)) {
             throw new TokenException(JwtErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        String storedRt = tokenRepository.findRt(userId);
+        String storedRt = userTokenRepository.findRt(userId);
         if (storedRt == null) {
             throw new TokenException(JwtErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
@@ -89,18 +89,18 @@ public class AuthService {
             throw new TokenException(JwtErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        User user = userJpaRepository.findById(userId)
+        User user = userJpaRepository.findByIdAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
 
         long rtTtl = jwtTokenProvider.getRtTtlSeconds(rt);
         if (rtTtl > 0) {
-            tokenRepository.blacklistRt(rt, rtTtl);
+            userTokenRepository.blacklistRt(rt, rtTtl);
         }
 
         if (at != null && !at.isBlank()) {
             long atTtl = jwtTokenProvider.getAtTtlSeconds(at);
             if (atTtl > 0) {
-                tokenRepository.blacklistAt(at, atTtl);
+                userTokenRepository.blacklistAt(at, atTtl);
             }
         }
 
@@ -109,7 +109,7 @@ public class AuthService {
         long newRtTtl = jwtTokenProvider.getRtTtlSeconds(newRt);
 
         // 새 RT를 Redis에 저장 (사용 가능한 RT는 항상 '한 개'만 유지)
-        tokenRepository.saveRefreshToken(userId, newRt, newRtTtl);
+        userTokenRepository.saveRefreshToken(userId, newRt, newRtTtl);
 
         return TokenReissueResponse.of(user.getId(), newAt, newRt);
     }
@@ -123,15 +123,15 @@ public class AuthService {
             throw new TokenException(JwtErrorCode.INVALID_BEARER_TOKEN);
         }
 
-        if (tokenRepository.isRtBlacklisted(rt)) {
+        if (userTokenRepository.isRtBlacklisted(rt)) {
             throw new TokenException(JwtErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        if (tokenRepository.isAtBlacklisted(at)) {
+        if (userTokenRepository.isAtBlacklisted(at)) {
             throw new TokenException(JwtErrorCode.INVALID_ACCESS_TOKEN);
         }
 
-        String storedRt = tokenRepository.findRt(userIdByRt);
+        String storedRt = userTokenRepository.findRt(userIdByRt);
         if (storedRt == null) {
             throw new TokenException(JwtErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
@@ -141,15 +141,15 @@ public class AuthService {
 
         long rtTtl = jwtTokenProvider.getRtTtlSeconds(rt);
         if (rtTtl > 0) {
-            tokenRepository.blacklistRt(rt, rtTtl);
+            userTokenRepository.blacklistRt(rt, rtTtl);
         }
 
         long atTtl = jwtTokenProvider.getAtTtlSeconds(at);
         if (atTtl > 0) {
-            tokenRepository.blacklistAt(at, atTtl);
+            userTokenRepository.blacklistAt(at, atTtl);
         }
 
-        tokenRepository.deleteRt(userIdByRt);
+        userTokenRepository.deleteRt(userIdByRt);
 
     }
 }
