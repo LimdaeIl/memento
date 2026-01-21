@@ -10,8 +10,14 @@ public record AuthEmailProperties(
         int maxAttempts,
         Duration lockoutDuration,
         Duration successValidityDuration,
-        Sender sender,
         Template template
 ) {
 
+
+    public record Template(
+            String subject,
+            String verificationUrlBase
+    ) {
+
+    }
 }
