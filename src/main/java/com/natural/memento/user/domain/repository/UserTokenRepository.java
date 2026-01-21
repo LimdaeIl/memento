@@ -1,6 +1,6 @@
 package com.natural.memento.user.domain.repository;
 
-public interface TokenRepository {
+public interface UserTokenRepository {
 
     void saveRefreshToken(Long userId, String refreshToken, long ttlMillis);
 

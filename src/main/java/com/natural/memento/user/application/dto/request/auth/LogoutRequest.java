@@ -1,4 +1,4 @@
-package com.natural.memento.user.application.dto.request;
+package com.natural.memento.user.application.dto.request.auth;
 
 import jakarta.validation.constraints.NotBlank;
 

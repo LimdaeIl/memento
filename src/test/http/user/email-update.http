@@ -1,0 +1,39 @@
+### 1. 회원가입
+POST http://localhost:30000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "optional94@naver.com",
+  "password": "test1234!",
+  "nickname": "test"
+}
+
+### 2. 로그인
+POST http://localhost:30000/api/v1/auth/sign-in
+Content-Type: application/json
+
+{
+  "email": "optional94@naver.com",
+  "password": "test1234!"
+}
+
+> {%
+  client.global.set("userId", response.body.data.userId);
+  client.global.set("accessToken", response.body.data.accessToken);
+  client.global.set("refreshToken", response.body.data.refreshToken);
+%}
+
+### 3. 나의 정보 조회
+GET http://localhost:30000/api/v1/users/me
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+### 이메일 업데이트용
+POST http://localhost:30000/api/v1/auth/update/email/send-code
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "email": "SFG@naveSFGr.com"
+}
+
