@@ -2,8 +2,10 @@ package com.natural.memento.user.presentation;
 
 import com.natural.memento.commons.response.ApiResponse;
 import com.natural.memento.user.application.dto.request.SendEmailCodeRequest;
+import com.natural.memento.user.application.dto.request.SignupRequest;
 import com.natural.memento.user.application.dto.request.VerifyEmailCodeRequest;
 import com.natural.memento.user.application.dto.response.SendEmailCodeResponse;
+import com.natural.memento.user.application.dto.response.SignupResponse;
 import com.natural.memento.user.application.dto.response.VerifyEmailCodeResponse;
 import com.natural.memento.user.application.service.AuthService;
 import com.natural.memento.user.application.service.EmailService;
@@ -34,13 +36,20 @@ public class AuthController {
 
     @PostMapping("/email/verify-code")
     public ResponseEntity<ApiResponse<VerifyEmailCodeResponse>> verifyEmailCode(
-            @Valid @RequestBody VerifyEmailCodeRequest request
+            @RequestBody @Valid VerifyEmailCodeRequest request
     ) {
         VerifyEmailCodeResponse response = emailService.verifyCode(request);
 
         return ResponseEntity.ok(ApiResponse.success(response));
-
     }
 
 
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponse<SignupResponse>> signup(
+            @RequestBody @Valid SignupRequest request
+    ) {
+        SignupResponse response = authService.signup(request);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 }

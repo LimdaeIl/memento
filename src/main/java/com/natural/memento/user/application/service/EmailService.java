@@ -7,6 +7,7 @@ import com.natural.memento.user.application.dto.response.VerifyEmailCodeResponse
 import com.natural.memento.user.domain.exception.AuthErrorCode;
 import com.natural.memento.user.domain.exception.AuthException;
 import com.natural.memento.user.domain.repository.UserEmailAuthRepository;
+import com.natural.memento.user.domain.repository.UserJpaRepository;
 import com.natural.memento.user.infrastructure.email.AuthEmailProperties;
 import com.natural.memento.user.infrastructure.email.EmailSender;
 import com.natural.memento.user.infrastructure.email.template.EmailTemplateRenderer;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class EmailService {
 
+    private final UserJpaRepository userJpaRepository;
     private final UserEmailAuthRepository userEmailAuthRepository;
     private final EmailTemplateRenderer templateRenderer;
     private final EmailSender emailSender;
@@ -32,6 +34,10 @@ public class EmailService {
 
     @Transactional
     public SendEmailCodeResponse sendEmailCode(SendEmailCodeRequest request) {
+        if (userJpaRepository.existsByEmail(request.email())) {
+            throw new AuthException(AuthErrorCode.EMAIL_EXISTS);
+        }
+
         if (userEmailAuthRepository.isLocked(request.email())) {
             throw new AuthException(AuthErrorCode.EMAIL_AUTH_LOCKED);
         }
