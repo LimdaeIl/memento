@@ -15,6 +15,7 @@ public enum JwtErrorCode implements ErrorCode {
     UNSUPPORTED_TOKEN(HttpStatus.BAD_REQUEST, "JWT: 지원하지 않는 토큰입니다."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "JWT: 리프레시 토큰을 찾을 수 없습니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "JWT: 유효하지 않은 리프레시 토큰입니다."),
+    INVALID_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "JWT: 유효하지 않은 액세스 토큰입니다."),
 
     // 무결성/시간
     TAMPERED_TOKEN(HttpStatus.UNAUTHORIZED, "JWT: 서명이 위조되었거나 무결성이 손상되었습니다."),

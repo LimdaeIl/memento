@@ -2,8 +2,8 @@ package com.natural.memento.user.application.dto.response;
 
 public record TokenReissueResponse(
         Long userId,
-        String AccessToken,
-        String RefreshToken
+        String accessToken,
+        String refreshToken
 ) {
 
     public static TokenReissueResponse of(Long userId, String newAt, String newRt) {

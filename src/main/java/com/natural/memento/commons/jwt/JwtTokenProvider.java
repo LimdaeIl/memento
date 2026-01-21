@@ -151,10 +151,6 @@ public class JwtTokenProvider {
         return trimmed;
     }
 
-    public Long getUserIdByRt(String rt) {
-        Claims claims = parseClaims(rt);
-        return claims.get(CLAIM_UID, Long.class);
-    }
 
 
 }

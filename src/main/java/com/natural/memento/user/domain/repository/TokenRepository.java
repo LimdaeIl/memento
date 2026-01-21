@@ -6,13 +6,13 @@ public interface TokenRepository {
 
     String findRt(Long userId);
 
-    void deleteRefreshToken(Long userId);
+    void deleteRt(Long userId);
 
     void blacklistAt(String accessToken, long ttlMillis);
 
-    void blacklistRefreshToken(String refreshToken, long ttlMillis);
+    void blacklistRt(String refreshToken, long ttlMillis);
 
-    boolean isAccessTokenBlacklisted(String accessToken);
+    boolean isAtBlacklisted(String accessToken);
 
     boolean isRtBlacklisted(String refreshToken);
 
