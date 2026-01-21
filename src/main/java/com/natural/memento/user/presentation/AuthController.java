@@ -2,9 +2,11 @@ package com.natural.memento.user.presentation;
 
 import com.natural.memento.commons.response.ApiResponse;
 import com.natural.memento.user.application.dto.request.SendEmailCodeRequest;
+import com.natural.memento.user.application.dto.request.SignInRequest;
 import com.natural.memento.user.application.dto.request.SignupRequest;
 import com.natural.memento.user.application.dto.request.VerifyEmailCodeRequest;
 import com.natural.memento.user.application.dto.response.SendEmailCodeResponse;
+import com.natural.memento.user.application.dto.response.SignInResponse;
 import com.natural.memento.user.application.dto.response.SignupResponse;
 import com.natural.memento.user.application.dto.response.VerifyEmailCodeResponse;
 import com.natural.memento.user.application.service.AuthService;
@@ -52,4 +54,15 @@ public class AuthController {
 
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
+    @PostMapping("/sign-in")
+    public ResponseEntity<ApiResponse<SignInResponse>> signIn(
+            @RequestBody @Valid SignInRequest request
+    ) {
+        SignInResponse response = authService.signIn(request);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+
 }

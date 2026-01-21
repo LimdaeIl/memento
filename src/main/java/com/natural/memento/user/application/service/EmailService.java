@@ -34,7 +34,7 @@ public class EmailService {
 
     @Transactional
     public SendEmailCodeResponse sendEmailCode(SendEmailCodeRequest request) {
-        if (userJpaRepository.existsByEmail(request.email())) {
+        if (userJpaRepository.existsByEmailAndDeletedAtIsNull(request.email())) {
             throw new AuthException(AuthErrorCode.EMAIL_EXISTS);
         }
 
