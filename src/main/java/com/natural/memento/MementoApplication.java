@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @SpringBootApplication
 public class MementoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MementoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MementoApplication.class, args);
+    }
 }

@@ -68,6 +68,13 @@ auth:
     lockout-duration: 5s
     success-validity-duration: 10m
 
+app:
+  jwt:
+    issuer: ${spring.application.name}
+    at-ttl-seconds: ${JWT_AT_TTL_SECONCDS}
+    rt-ttl-seconds: ${JWT_RT_TTL_SECONCDS}
+    secret: ${JWT_SECRET_KEY}
+    clock-skew-seconds: ${JWT_CLOCK_SKEW_SECONDS}
 
 management:
   endpoints:
