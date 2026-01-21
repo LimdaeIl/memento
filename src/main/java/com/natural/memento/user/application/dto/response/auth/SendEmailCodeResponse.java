@@ -1,4 +1,4 @@
-package com.natural.memento.user.application.dto.response;
+package com.natural.memento.user.application.dto.response.auth;
 
 public record SendEmailCodeResponse(
         String email,

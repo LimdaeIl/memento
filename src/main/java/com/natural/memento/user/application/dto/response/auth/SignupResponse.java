@@ -1,4 +1,4 @@
-package com.natural.memento.user.application.dto.response;
+package com.natural.memento.user.application.dto.response.auth;
 
 import com.natural.memento.user.domain.entity.User;
 

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
-public class UserLocation {
+public class UserAddress {
 
     @Column(name = "city", length = 100)
     private String city;
@@ -23,8 +23,5 @@ public class UserLocation {
 
     @Column(name = "zipcode", length = 100)
     private String zipcode;
-
-    @Column(name = "country", length = 100)
-    private String country;
-
 }
+

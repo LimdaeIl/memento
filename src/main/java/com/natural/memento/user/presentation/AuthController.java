@@ -7,11 +7,11 @@ import com.natural.memento.user.application.dto.request.SignInRequest;
 import com.natural.memento.user.application.dto.request.SignupRequest;
 import com.natural.memento.user.application.dto.request.TokenReissueRequest;
 import com.natural.memento.user.application.dto.request.VerifyEmailCodeRequest;
-import com.natural.memento.user.application.dto.response.SendEmailCodeResponse;
-import com.natural.memento.user.application.dto.response.SignInResponse;
-import com.natural.memento.user.application.dto.response.SignupResponse;
-import com.natural.memento.user.application.dto.response.TokenReissueResponse;
-import com.natural.memento.user.application.dto.response.VerifyEmailCodeResponse;
+import com.natural.memento.user.application.dto.response.auth.SendEmailCodeResponse;
+import com.natural.memento.user.application.dto.response.auth.SignInResponse;
+import com.natural.memento.user.application.dto.response.auth.SignupResponse;
+import com.natural.memento.user.application.dto.response.auth.TokenReissueResponse;
+import com.natural.memento.user.application.dto.response.auth.VerifyEmailCodeResponse;
 import com.natural.memento.user.application.service.AuthService;
 import com.natural.memento.user.application.service.EmailService;
 import jakarta.validation.Valid;
@@ -85,6 +85,4 @@ public class AuthController {
         authService.logout(at, request.refreshToken());
         return ResponseEntity.noContent().build();
     }
-
-
 }
