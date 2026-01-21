@@ -32,7 +32,7 @@ public class TokenRedisRepository implements TokenRepository {
     }
 
     @Override
-    public String findRefreshToken(Long userId) {
+    public String findRt(Long userId) {
         return template.opsForValue().get(buildKey(userId));
     }
 
@@ -43,7 +43,7 @@ public class TokenRedisRepository implements TokenRepository {
 
 
     @Override
-    public void blacklistAccessToken(String accessToken, long ttlMillis) {
+    public void blacklistAt(String accessToken, long ttlMillis) {
         template.opsForValue()
                 .set(blacklistKey(accessToken), "blacklisted", Duration.ofMillis(ttlMillis));
     }
@@ -60,7 +60,7 @@ public class TokenRedisRepository implements TokenRepository {
     }
 
     @Override
-    public boolean isRefreshTokenBlacklisted(String refreshToken) {
+    public boolean isRtBlacklisted(String refreshToken) {
         return template.hasKey(blacklistRefreshKey(refreshToken));
     }
 }

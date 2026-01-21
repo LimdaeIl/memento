@@ -4,16 +4,16 @@ public interface TokenRepository {
 
     void saveRefreshToken(Long userId, String refreshToken, long ttlMillis);
 
-    String findRefreshToken(Long userId);
+    String findRt(Long userId);
 
     void deleteRefreshToken(Long userId);
 
-    void blacklistAccessToken(String accessToken, long ttlMillis);
+    void blacklistAt(String accessToken, long ttlMillis);
 
     void blacklistRefreshToken(String refreshToken, long ttlMillis);
 
     boolean isAccessTokenBlacklisted(String accessToken);
 
-    boolean isRefreshTokenBlacklisted(String refreshToken);
+    boolean isRtBlacklisted(String refreshToken);
 
 }
