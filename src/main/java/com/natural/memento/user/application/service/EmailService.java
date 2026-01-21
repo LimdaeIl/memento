@@ -2,8 +2,8 @@ package com.natural.memento.user.application.service;
 
 import com.natural.memento.user.application.dto.request.SendEmailCodeRequest;
 import com.natural.memento.user.application.dto.request.VerifyEmailCodeRequest;
-import com.natural.memento.user.application.dto.response.SendEmailCodeResponse;
-import com.natural.memento.user.application.dto.response.VerifyEmailCodeResponse;
+import com.natural.memento.user.application.dto.response.auth.SendEmailCodeResponse;
+import com.natural.memento.user.application.dto.response.auth.VerifyEmailCodeResponse;
 import com.natural.memento.user.domain.exception.AuthErrorCode;
 import com.natural.memento.user.domain.exception.AuthException;
 import com.natural.memento.user.domain.repository.UserEmailAuthRepository;
@@ -66,8 +66,6 @@ public class EmailService {
                         "minutes", minutes
                 )
         );
-        log.info("Rendered mail html length={}", html.length());
-
         emailSender.sendCode(request.email(), subject, html);
 
         return SendEmailCodeResponse.of(request.email());

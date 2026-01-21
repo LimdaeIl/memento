@@ -18,7 +18,7 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(Long userId, String email, UserRole role) {
         this.userId = userId;
         this.email = email;
-        this.authorities = List.of(new SimpleGrantedAuthority(role.name()));
+        this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override

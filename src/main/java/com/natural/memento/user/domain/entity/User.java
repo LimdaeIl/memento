@@ -38,13 +38,13 @@ public class User extends BaseEntity {
     private UserRole role;
 
     @Embedded
-    private UserLocation location;
+    private UserAddress address;
 
     private User(String email, String password, String nickname) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.role = UserRole.ROLE_USER;
+        this.role = UserRole.USER;
     }
 
     public static User create(String email, String password, String nickname) {
