@@ -1,28 +1,23 @@
 package com.natural.memento.commons.jwt;
 
-import com.natural.memento.user.domain.entity.User;
 import com.natural.memento.user.domain.entity.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.IncorrectClaimException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.Jwts.SIG;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.MissingClaimException;
 import io.jsonwebtoken.PrematureJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
-import java.util.UUID;
 import javax.crypto.SecretKey;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
@@ -37,7 +32,6 @@ public class JwtTokenProvider {
     private static final String PREFIX_BEARER = "Bearer ";
     private static final String CLAIM_UID = "uid";
     private static final String CLAIM_ROLE = "role";
-
 
 
     public JwtTokenProvider(JwtProperties jwtProperties) {
@@ -156,5 +150,11 @@ public class JwtTokenProvider {
         }
         return trimmed;
     }
+
+    public Long getUserIdByRt(String rt) {
+        Claims claims = parseClaims(rt);
+        return claims.get(CLAIM_UID, Long.class);
+    }
+
 
 }
