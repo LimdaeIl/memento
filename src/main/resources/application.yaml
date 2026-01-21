@@ -11,7 +11,7 @@ spring:
       max-request-size: 200MB
 
   config:
-    import: optional:file:.env
+    import: optional:file:.env[.properties]
 
   datasource:
     url: ${MYSQL_URL:jdbc:mysql://localhost:3307/memento?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=utf8&serverTimezone=Asia/Seoul}
@@ -45,6 +45,29 @@ spring:
       port: ${REDIS_PORT:6379}
       connect-timeout: 2s
       timeout: 2s
+
+  mail:
+    host: ${NAVER_MAIL_HOST}
+    port: ${NAVER_MAIL_PORT}
+    username: ${NAVER_MAIL_USERNAME}
+    password: ${NAVER_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: false
+
+auth:
+  email:
+    code-validity-duration: 5m
+    resend-cooldown-duration: 5s
+    max-attempts: 5
+    lockout-duration: 5s
+    success-validity-duration: 10m
+
 
 management:
   endpoints:
