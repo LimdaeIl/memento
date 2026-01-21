@@ -77,7 +77,7 @@ public class AuthService {
     @Transactional
     public TokenReissueResponse reissue(String at, String rt) {
 
-        Long userId = jwtTokenProvider.getUserIdByRt(rt);
+        Long userId = jwtTokenProvider.getUserId(rt);
 
         if (tokenRepository.isRtBlacklisted(rt)) {
             throw new TokenException(JwtErrorCode.INVALID_REFRESH_TOKEN);
@@ -96,7 +96,7 @@ public class AuthService {
 
         long rtTtl = jwtTokenProvider.getRtTtlSeconds(rt);
         if (rtTtl > 0) {
-            tokenRepository.blacklistRefreshToken(rt, rtTtl);
+            tokenRepository.blacklistRt(rt, rtTtl);
         }
 
         if (at != null && !at.isBlank()) {
@@ -114,5 +114,44 @@ public class AuthService {
         tokenRepository.saveRefreshToken(userId, newRt, newRtTtl);
 
         return TokenReissueResponse.of(user.getId(), newAt, newRt);
+    }
+
+    @Transactional
+    public void logout(String at, String rt) {
+        Long userIdByRt = jwtTokenProvider.getUserId(rt);
+        Long userIdByAt = jwtTokenProvider.getUserId(at);
+
+        if (!userIdByRt.equals(userIdByAt)) {
+            throw new TokenException(JwtErrorCode.INVALID_BEARER_TOKEN);
+        }
+
+        if (tokenRepository.isRtBlacklisted(rt)) {
+            throw new TokenException(JwtErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        if (tokenRepository.isAtBlacklisted(at)) {
+            throw new TokenException(JwtErrorCode.INVALID_ACCESS_TOKEN);
+        }
+
+        String storedRt = tokenRepository.findRt(userIdByRt);
+        if (storedRt == null) {
+            throw new TokenException(JwtErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
+        if (!storedRt.equals(rt)) {
+            throw new TokenException(JwtErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        long rtTtl = jwtTokenProvider.getRtTtlSeconds(rt);
+        if (rtTtl > 0) {
+            tokenRepository.blacklistRt(rt, rtTtl);
+        }
+
+        long atTtl = jwtTokenProvider.getAtTtlSeconds(at);
+        if (atTtl > 0) {
+            tokenRepository.blacklistAt(at, atTtl);
+        }
+
+        tokenRepository.deleteRt(userIdByRt);
+
     }
 }

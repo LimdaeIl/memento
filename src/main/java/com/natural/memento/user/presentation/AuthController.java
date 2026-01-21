@@ -1,6 +1,7 @@
 package com.natural.memento.user.presentation;
 
 import com.natural.memento.commons.response.ApiResponse;
+import com.natural.memento.user.application.dto.request.LogoutRequest;
 import com.natural.memento.user.application.dto.request.SendEmailCodeRequest;
 import com.natural.memento.user.application.dto.request.SignInRequest;
 import com.natural.memento.user.application.dto.request.SignupRequest;
@@ -67,7 +68,6 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-
     @PostMapping("/reissue")
     public ResponseEntity<ApiResponse<TokenReissueResponse>> reissue(
             @RequestHeader(name = "Authorization", required = false) String at,
@@ -76,5 +76,15 @@ public class AuthController {
         TokenReissueResponse response = authService.reissue(at, request.refreshToken());
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @RequestHeader(name = "Authorization") String at,
+            @RequestBody @Valid LogoutRequest request
+    ) {
+        authService.logout(at, request.refreshToken());
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
