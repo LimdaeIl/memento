@@ -1,11 +1,10 @@
 package com.natural.memento.interest.domain.entity;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
+@RequiredArgsConstructor
 public enum InterestType {
     HOBBY("취미"),
     SPORT("스포츠"),
