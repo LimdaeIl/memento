@@ -5,8 +5,8 @@ import com.natural.memento.commons.response.ErrorResponse.FieldError;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,18 +22,16 @@ public class GlobalExceptionHandler {
         ErrorCode code = ex.getErrorCode();
 
         String title = ((Enum<?>) code).name();
-        String type = toProblemType(title);
         String instance = request.getRequestURI();
-        String errorCode = title;
 
         return ResponseEntity.status(code.status())
                 .body(ErrorResponse.of(
-                        type,
+                        PROBLEM_BASE_URI,
                         title,
                         code.status(),
                         ex.getMessage(),
                         instance,
-                        errorCode,
+                        title,
                         null
                 ));
     }
@@ -48,14 +46,13 @@ public class GlobalExceptionHandler {
 
         AppErrorCode code = AppErrorCode.INVALID_INPUT_VALUE;
         String title = code.name();
-        String type = toProblemType(title);
         String instance = request.getRequestURI();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(code.status())
                 .body(ErrorResponse.of(
-                        type,
+                        PROBLEM_BASE_URI,
                         title,
-                        HttpStatus.BAD_REQUEST,
+                        code.status(),
                         code.message(),
                         instance,
                         title,
@@ -63,8 +60,43 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    private static String toProblemType(String title) {
-        return PROBLEM_BASE_URI;
+    @ExceptionHandler(MailException.class)
+    public ResponseEntity<ErrorResponse> handleMail(MailException ex, HttpServletRequest request) {
+        log.warn("Mail send failed. uri={}, message={}", request.getRequestURI(), ex.getMessage(),
+                ex);
+
+        AppErrorCode code = AppErrorCode.MAIL_SEND_FAILED;
+        String title = code.name();
+
+        return ResponseEntity.status(code.status())
+                .body(ErrorResponse.of(
+                        PROBLEM_BASE_URI,
+                        title,
+                        code.status(),
+                        code.message(),
+                        request.getRequestURI(),
+                        title,
+                        null
+                ));
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleAny(Exception ex, HttpServletRequest request) {
+        log.error("Unhandled exception. uri={}, message={}", request.getRequestURI(),
+                ex.getMessage(), ex);
+
+        AppErrorCode code = AppErrorCode.INTERNAL_SERVER_ERROR;
+        String title = code.name();
+
+        return ResponseEntity.status(code.status())
+                .body(ErrorResponse.of(
+                        PROBLEM_BASE_URI,
+                        title,
+                        code.status(),
+                        code.message(),
+                        request.getRequestURI(),
+                        title,
+                        null
+                ));
+    }
 }
