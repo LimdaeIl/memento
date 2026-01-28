@@ -1,6 +1,6 @@
 package com.natural.memento.user.infrastructure.redis;
 
-import com.natural.memento.user.domain.entity.PhoneAuthPurpose;
+import com.natural.memento.user.domain.type.PhoneAuthPurpose;
 import com.natural.memento.user.domain.repository.UserPhoneAuthRepository;
 import java.time.Duration;
 import java.util.Optional;

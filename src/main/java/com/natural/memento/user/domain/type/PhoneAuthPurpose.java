@@ -1,4 +1,4 @@
-package com.natural.memento.user.domain.entity;
+package com.natural.memento.user.domain.type;
 
 public enum PhoneAuthPurpose {
     SIGNUP,

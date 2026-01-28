@@ -20,7 +20,10 @@ public enum AuthErrorCode implements ErrorCode {
     EMAIL_AUTH_EXPIRED(HttpStatus.BAD_REQUEST, "인증/인가: 이메일 인증 코드가 만료되었거나 존재하지 않습니다."),
     EMAIL_AUTH_CODE_MISMATCH(HttpStatus.BAD_REQUEST, "인증/인가: 이메일 인증 코드가 일치하지 않습니다."),
     EMAIL_AUTH_NOT_VERIFIED(HttpStatus.UNAUTHORIZED, "인증/인가: 인증되지 않은 이메일입니다."),
-    PHONE_AUTH_NOT_VERIFIED(HttpStatus.UNAUTHORIZED, "인증/인가: 인증되지 않은 휴대전화번호입니다.");
+    PHONE_AUTH_NOT_VERIFIED(HttpStatus.UNAUTHORIZED, "인증/인가: 인증되지 않은 휴대전화번호입니다."),
+
+    SOCIAL_EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "소셜 로그인: 동일 이메일로 이미 가입된 계정이 있습니다."),
+    SOCIAL_EXCHANGE_CODE_INVALID(HttpStatus.BAD_REQUEST, "소셜 로그인: 교환 코드가 만료되었거나 유효하지 않습니다.");
 
     private final HttpStatus status;
     private final String message;

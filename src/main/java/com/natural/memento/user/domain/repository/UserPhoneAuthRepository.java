@@ -1,6 +1,6 @@
 package com.natural.memento.user.domain.repository;
 
-import com.natural.memento.user.domain.entity.PhoneAuthPurpose;
+import com.natural.memento.user.domain.type.PhoneAuthPurpose;
 import java.time.Duration;
 import java.util.Optional;
 

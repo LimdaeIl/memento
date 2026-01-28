@@ -1,6 +1,6 @@
 package com.natural.memento.user.application.service;
 
-import com.natural.memento.user.domain.entity.PhoneAuthPurpose;
+import com.natural.memento.user.domain.type.PhoneAuthPurpose;
 import com.natural.memento.user.domain.repository.UserPhoneAuthRepository;
 import com.natural.memento.user.infrastructure.solapi.SmsSender;
 import java.security.SecureRandom;

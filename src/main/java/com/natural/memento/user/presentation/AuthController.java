@@ -2,12 +2,14 @@ package com.natural.memento.user.presentation;
 
 import com.natural.memento.commons.response.ApiResponse;
 import com.natural.memento.commons.security.CustomUserDetails;
+import com.natural.memento.user.application.dto.request.auth.ExchangeRequest;
 import com.natural.memento.user.application.dto.request.auth.LogoutRequest;
 import com.natural.memento.user.application.dto.request.auth.SendEmailCodeRequest;
 import com.natural.memento.user.application.dto.request.auth.SignInRequest;
 import com.natural.memento.user.application.dto.request.auth.SignupRequest;
 import com.natural.memento.user.application.dto.request.auth.TokenReissueRequest;
 import com.natural.memento.user.application.dto.request.auth.VerifyEmailCodeRequest;
+import com.natural.memento.user.application.dto.response.auth.ExchangeResponse;
 import com.natural.memento.user.application.dto.response.auth.SendEmailCodeResponse;
 import com.natural.memento.user.application.dto.response.auth.SignInResponse;
 import com.natural.memento.user.application.dto.response.auth.SignupResponse;
@@ -15,11 +17,14 @@ import com.natural.memento.user.application.dto.response.auth.TokenReissueRespon
 import com.natural.memento.user.application.dto.response.auth.VerifyEmailCodeResponse;
 import com.natural.memento.user.application.service.AuthService;
 import com.natural.memento.user.application.service.EmailService;
+import com.natural.memento.user.application.service.SocialAuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -33,6 +38,8 @@ public class AuthController {
 
     private final AuthService authService;
     private final EmailService emailService;
+    private final SocialAuthService socialAuthService;
+
 
     @PostMapping("/signup/email/send-code")
     public ResponseEntity<ApiResponse<SendEmailCodeResponse>> sendEmailCodeBySignup(
@@ -100,5 +107,20 @@ public class AuthController {
     ) {
         authService.logout(at, request.refreshToken());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/social/google")
+    public ResponseEntity<Void> google() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/oauth2/authorization/google");
+        return ResponseEntity.status(302).headers(headers).build();
+    }
+
+    @PostMapping("/social/exchange")
+    public ResponseEntity<ApiResponse<ExchangeResponse>> socialExchange(
+            @RequestBody ExchangeRequest req
+    ) {
+        ExchangeResponse response = socialAuthService.exchange(req.code());
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

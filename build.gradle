@@ -87,6 +87,10 @@ dependencies {
 
     // sms
     implementation 'com.solapi:sdk:1.0.3'
+
+    // oauth
+    implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
+    testImplementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client-test'
 }
 
 tasks.named('test') {

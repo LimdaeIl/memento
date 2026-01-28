@@ -16,10 +16,12 @@ public class CorsConfig {
 
         config.setAllowedOrigins(List.of(
                 "http://localhost:30000",
+                "http://localhost:5173",
                 "http://localhost:3000"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Location")); // redirect 디버깅에 도움(선택)
 
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);

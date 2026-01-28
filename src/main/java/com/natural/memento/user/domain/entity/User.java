@@ -27,13 +27,13 @@ public class User extends BaseEntity {
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 512)
+    @Column(name = "password", length = 512)
     private String password;
 
     @Column(name = "nickname", nullable = false, length = 20)
     private String nickname;
 
-    @Column(name = "phone", nullable = false, length = 11)
+    @Column(name = "phone", length = 11) // nullable true
     private String phone;
 
     @Enumerated(EnumType.STRING)
@@ -46,12 +46,27 @@ public class User extends BaseEntity {
     @Column(name = "profile_image", length = 300)
     private String profileImage;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "social_type", length = 20)
+    private SocialType socialType;
+
+    @Column(name = "social_id", length = 255)
+    private String socialId;
+
+
     private User(String email, String password, String nickname, String phone) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.phone = phone;
         this.role = UserRole.USER;
+    }
+
+    public static User createSocial(String email, String nickname, SocialType type, String socialId) {
+        User user = new User(email, null, nickname, null); // password/phone 없음
+        user.socialType = type;
+        user.socialId = socialId;
+        return user;
     }
 
     public static User create(String email, String password, String nickname, String phone) {
@@ -73,6 +88,12 @@ public class User extends BaseEntity {
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public void linkSocial(SocialType type, String socialId) {
+        this.socialType = type;
+        this.socialId = socialId;
+    }
+
 }
 
 

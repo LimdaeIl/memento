@@ -8,7 +8,7 @@ import com.natural.memento.user.application.dto.request.auth.SignupRequest;
 import com.natural.memento.user.application.dto.response.auth.SignInResponse;
 import com.natural.memento.user.application.dto.response.auth.SignupResponse;
 import com.natural.memento.user.application.dto.response.auth.TokenReissueResponse;
-import com.natural.memento.user.domain.entity.PhoneAuthPurpose;
+import com.natural.memento.user.domain.type.PhoneAuthPurpose;
 import com.natural.memento.user.domain.entity.User;
 import com.natural.memento.user.domain.exception.AuthErrorCode;
 import com.natural.memento.user.domain.exception.AuthException;

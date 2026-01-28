@@ -59,6 +59,18 @@ spring:
             enable: true
           starttls:
             enable: false
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
 
 auth:
   email:
@@ -75,6 +87,9 @@ app:
     rt-ttl-seconds: ${JWT_RT_TTL_SECONCDS}
     secret: ${JWT_SECRET_KEY}
     clock-skew-seconds: ${JWT_CLOCK_SKEW_SECONDS}
+  oauth2:
+    success-redirect: "http://localhost:5173/oauth/callback"   # 프론트 콜백 라우트
+    exchange-ttl-seconds: 120                                  # 1회성 교환 코드 TTL
 
 solapi:
   api-key: ${SOLAPI_API_KEY}
