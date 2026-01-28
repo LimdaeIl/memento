@@ -30,7 +30,7 @@ configurations {
 }
 
 dependencies {
-    // web
+    // webf
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 
     // security + view (필요 없으면 제거)
@@ -82,8 +82,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-actuator-test'
 
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    testImplementation 'org.springframework.boot:spring-boot-starter-restdocs'
+    testImplementation 'org.springframework.boot:spring-boot-restdocs'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // sms
+    implementation 'com.solapi:sdk:1.0.3'
 }
 
 tasks.named('test') {

@@ -1,0 +1,35 @@
+### 1. 휴대전화번호 인증 수행
+POST http://localhost:30000/api/v1/auth/phone/send-sms
+Content-Type: application/json
+
+{
+  "phoneNumber": "01063666725",
+  "purpose": "SIGNUP"
+}
+
+### 2. 휴대전화번호 인증 완료
+POST http://localhost:30000/api/v1/auth/phone/verify-sms
+Content-Type: application/json
+
+{
+  "phoneNumber": "01063666725",
+  "purpose": "SIGNUP",
+  "code": "016675"
+}
+
+> {%
+  client.global.set("verificationToken", response.body.data.verificationToken);
+%}
+
+### 3. 회원가입
+POST http://localhost:30000/api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "email": "optional94@naver.com",
+  "password": "test1234!",
+  "nickname": "test",
+  "phone": "01063666725",
+  "phoneVerificationToken": "{{verificationToken}}"
+}
+

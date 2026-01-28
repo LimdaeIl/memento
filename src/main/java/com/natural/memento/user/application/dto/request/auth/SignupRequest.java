@@ -23,7 +23,13 @@ public record SignupRequest(
                 regexp = "^[A-Za-z0-9가-힣!@#$%^&*()_+\\-={}|\\[\\]:\";'<>?,./]{1,12}$",
                 message = "닉네임: 1~12자, 영문/숫자/한글/특수기호만 허용합니다."
         )
-        String nickname
+        String nickname,
+
+        @NotBlank(message = "휴대전화번호: 휴대전화번호는 필수입니다.")
+        String phone,
+
+        @NotBlank(message = "휴대전화 인증 토큰: 휴대전화 인증은 필수입니다.")
+        String phoneVerificationToken
 ) {
 
 }

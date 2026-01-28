@@ -33,6 +33,9 @@ public class User extends BaseEntity {
     @Column(name = "nickname", nullable = false, length = 20)
     private String nickname;
 
+    @Column(name = "phone", nullable = false, length = 11)
+    private String phone;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "user_role", nullable = false, length = 20)
     private UserRole role;
@@ -43,15 +46,16 @@ public class User extends BaseEntity {
     @Column(name = "profile_image", length = 300)
     private String profileImage;
 
-    private User(String email, String password, String nickname) {
+    private User(String email, String password, String nickname, String phone) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.phone = phone;
         this.role = UserRole.USER;
     }
 
-    public static User create(String email, String password, String nickname) {
-        return new User(email, password, nickname);
+    public static User create(String email, String password, String nickname, String phone) {
+        return new User(email, password, nickname, phone);
     }
 
     public void updateEmail(String email) {

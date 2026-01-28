@@ -8,6 +8,7 @@ import com.natural.memento.user.application.dto.request.auth.SignupRequest;
 import com.natural.memento.user.application.dto.response.auth.SignInResponse;
 import com.natural.memento.user.application.dto.response.auth.SignupResponse;
 import com.natural.memento.user.application.dto.response.auth.TokenReissueResponse;
+import com.natural.memento.user.domain.entity.PhoneAuthPurpose;
 import com.natural.memento.user.domain.entity.User;
 import com.natural.memento.user.domain.exception.AuthErrorCode;
 import com.natural.memento.user.domain.exception.AuthException;
@@ -29,6 +30,9 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
+    private final PhoneVerificationService phoneVerificationService;
+
+
     @Transactional
     public SignupResponse signup(SignupRequest request) {
 
@@ -37,6 +41,15 @@ public class AuthService {
 //            throw new AuthException(AuthErrorCode.EMAIL_AUTH_NOT_VERIFIED);
 //        }
 
+        boolean ok = phoneVerificationService.consumeVerificationToken(
+                PhoneAuthPurpose.SIGNUP,
+                request.phone(),
+                request.phoneVerificationToken()
+        );
+        if (!ok) {
+            throw new AuthException(AuthErrorCode.PHONE_AUTH_NOT_VERIFIED);
+        }
+
         if (userJpaRepository.existsByEmail(request.email())) {
             throw new AuthException(AuthErrorCode.EMAIL_EXISTS);
         }
@@ -44,7 +57,8 @@ public class AuthService {
         User user = User.create(
                 request.email(),
                 passwordEncoder.encode(request.password()),
-                request.nickname()
+                request.nickname(),
+                request.phone()
         );
 
         userJpaRepository.save(user);

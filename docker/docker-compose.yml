@@ -39,33 +39,6 @@ services:
       timeout: 3s
       retries: 20
 
-  mysqld-exporter:
-    image: prom/mysqld-exporter:v0.18.0
-    container_name: memento-mysqld-exporter
-    restart: unless-stopped
-    depends_on:
-      mysql:
-        condition: service_healthy
-    env_file:
-      - ./.env
-    volumes:
-      - ./mysql-exporter/entrypoint.sh:/entrypoint.sh:ro
-    entrypoint: ["/bin/sh", "/entrypoint.sh"]
-    ports:
-      - "9104:9104"
-
-  redis-exporter:
-    image: oliver006/redis_exporter:v1.66.0
-    container_name: memento-redis-exporter
-    restart: unless-stopped
-    depends_on:
-      redis:
-        condition: service_healthy
-    environment:
-      REDIS_ADDR: redis://redis:6379
-    ports:
-      - "9121:9121"
-
   prometheus:
     image: prom/prometheus:v3.1.0
     container_name: memento-prometheus

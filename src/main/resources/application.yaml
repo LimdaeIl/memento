@@ -76,15 +76,16 @@ app:
     secret: ${JWT_SECRET_KEY}
     clock-skew-seconds: ${JWT_CLOCK_SKEW_SECONDS}
 
+solapi:
+  api-key: ${SOLAPI_API_KEY}
+  api-secret: ${SOLAPI_API_SECRET}
+  from: ${SOLAPI_FROM}
+
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus
+        include: health,info,prometheus
   endpoint:
-    health:
-      probes:
-        enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
+    prometheus:
+      enabled: true
